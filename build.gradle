@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+group 'ns3asy-bindings'
+version '0.1'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'net.java.dev.jna:jna:5.5.0'
+	testCompile 'junit:junit:4.12'
+}
