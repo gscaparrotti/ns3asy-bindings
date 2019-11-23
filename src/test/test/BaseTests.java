@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.sun.jna.Pointer;
-
 import bindings.NS3asy;
 
 public class BaseTests {
@@ -19,13 +17,8 @@ public class BaseTests {
 		int toSendCount = 100;
 		String toSendString = "test";
 		List<String> receivedStrings = new ArrayList<>(toSendCount);
-		NS3asy.INSTANCE.SetOnPacketReadFtn(new NS3asy.SetOnPacketReadFtn_ftn_callback() {			
-			@Override
-			public void apply(String receiverIp, int receiverPort, String senderIp, int senderPort, 
-					Pointer payload, int length) {
-					receivedStrings.add(new String(payload.getByteArray(0, length)));
-			}
-		});
+		NS3asy.INSTANCE.SetOnPacketReadFtn((receiverIp, receiverPort, senderIp, senderPort, payload, length) -> 
+			receivedStrings.add(new String(payload.getByteArray(0, length))));
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
 		NS3asy.INSTANCE.FinalizeSimulationSetup();
