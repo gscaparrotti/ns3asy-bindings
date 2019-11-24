@@ -59,6 +59,16 @@ public interface NS3asy extends Library {
 	 */
 	void StopSimulation();
 	/**
+	 * Original signature : <code>char* getIpAddressFromIndex(unsigned int)</code><br>
+	 * <i>native declaration : line 28</i>
+	 */
+	Pointer getIpAddressFromIndex(int index);
+	/**
+	 * Original signature : <code>int getIndexFromIpAddress(const char*)</code><br>
+	 * <i>native declaration : line 30</i>
+	 */
+	int getIndexFromIpAddress(String ip);
+	/**
 	 * Original signature : <code>void SetOnReceiveFtn(SetOnReceiveFtn_ftn_callback*)</code><br>
 	 * <i>native declaration : line 19</i>
 	 */
