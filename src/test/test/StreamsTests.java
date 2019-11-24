@@ -17,8 +17,8 @@ public class StreamsTests {
 	
 	@Test
 	public void oneToOneStreamTest() {
-		int nodesCount = 2;
-		List<String> receivedStrings = new ArrayList<>();
+		final int nodesCount = 2;
+		final List<String> receivedStrings = new ArrayList<>();
 		
 		NS3asy.INSTANCE.SetOnPacketReadFtn((receiverIp, receiverPort, senderIp, senderPort, payload, length) ->
 					receivedStrings.add(new String(payload.getByteArray(0, length))));
@@ -29,9 +29,9 @@ public class StreamsTests {
 		
 		//we use a Date object to demonstrate the functionality of serialization with
 		//something other than a string, yet simple
-		long someEpoch = 1574505936837L;
-		Date dateToSend = new Date(someEpoch);
-		String payload = NS3StreamsUtils.serializeToString(dateToSend);
+		final long someEpoch = 1574505936837L;
+		final Date dateToSend = new Date(someEpoch);
+		final String payload = NS3StreamsUtils.serializeToString(dateToSend);
 		
 		for (int i = 0; i < nodesCount; i++) {
 			NS3asy.INSTANCE.SchedulePacketsSending(i, 1, payload, payload.length());
@@ -39,31 +39,28 @@ public class StreamsTests {
 
 		NS3asy.INSTANCE.ResumeSimulation(-1);
 		
-		String receivedPayload = receivedStrings.stream().reduce((s1, s2) -> s1 + s2).orElse("");
-		Object receivedObject = NS3StreamsUtils.deserializeFromString(receivedPayload);
+		final String receivedPayload = receivedStrings.stream().reduce((s1, s2) -> s1 + s2).orElse("");
+		final Object receivedObject = NS3StreamsUtils.deserializeFromString(receivedPayload);
 		
 		if (!(receivedObject instanceof Date)) {
 			fail("Received object was a " + receivedObject.getClass().getName());
 		} else {
-			Date receivedDate = (Date) receivedObject;
+			final Date receivedDate = (Date) receivedObject;
 			assertEquals(someEpoch, receivedDate.getTime());
+			assertEquals(dateToSend, receivedDate);
 		}
 	}
 	
 	@Test
 	public void serializationTest() {		
-		//we use a Date object to demonstrate the functionality of serialization with
-		//something other than a string, yet simple
-		long someEpoch = 1574505936837L;
-		Date dateToSend = new Date(someEpoch);
-		String payload = NS3StreamsUtils.serializeToString(dateToSend);
-
-		Object receivedObject = NS3StreamsUtils.deserializeFromString(payload);
-	
-		if (!(receivedObject instanceof Date)) {
-			fail("Received object was a " + receivedObject.getClass().getName());
+		final long someEpoch = 1574505936837L;
+		final Date dateToSend = new Date(someEpoch);
+		final String payload = NS3StreamsUtils.serializeToString(dateToSend);
+		final Object deserializedObject = NS3StreamsUtils.deserializeFromString(payload);	
+		if (!(deserializedObject instanceof Date)) {
+			fail("Received object was a " + deserializedObject.getClass().getName());
 		} else {
-			Date receivedDate = (Date) receivedObject;
+			final Date receivedDate = (Date) deserializedObject;
 			assertEquals(someEpoch, receivedDate.getTime());
 		}
 	}

@@ -23,7 +23,7 @@ public class NS3StreamsUtils {
 			oos.close();
 			return Base64.getEncoder().encodeToString(baos.toByteArray());
 		} catch (IOException e) {
-			//ByteArrayOutputStream is a "fake" stream, so this should never happen
+			//check for null values in the return value
 			return null;
 		}
 	}
