@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Test;
 
 import bindings.NS3asy;
@@ -14,6 +15,13 @@ import utils.NS3StreamsUtils;
 
 
 public class StreamsTests {
+	
+	@After
+	public void finish() {
+		//A simulation must be cleared before starting a new one, otherwise it remains in a dangling state.
+		//Note that the simulation instance is the same across all the tests
+		NS3asy.INSTANCE.StopSimulation();
+	}
 	
 	@Test
 	public void oneToOneStreamTest() {
