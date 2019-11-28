@@ -47,7 +47,7 @@ public interface NS3asy extends Library {
 	 * Original signature : <code>void SchedulePacketsSending(unsigned int, unsigned int, const char*, int)</code><br>
 	 * <i>native declaration : line 13</i>
 	 */
-	void SchedulePacketsSending(int senderIndex, int nPackets, String payload, int length);
+	void SchedulePacketsSending(int senderIndex, int nPackets, Pointer payload, int length);
 	/**
 	 * Original signature : <code>void ResumeSimulation(double)</code><br>
 	 * <i>native declaration : line 15</i>

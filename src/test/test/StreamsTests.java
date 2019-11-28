@@ -10,11 +10,17 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Test;
 
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+
 import bindings.NS3asy;
+import bindings.NS3asy.SetOnPacketReadFtn_ftn_callback;
 import utils.NS3StreamsUtils;
 
 
 public class StreamsTests {
+	
+	private static SetOnPacketReadFtn_ftn_callback callback;
 	
 	@After
 	public void finish() {
@@ -28,8 +34,9 @@ public class StreamsTests {
 		final int nodesCount = 2;
 		final List<String> receivedStrings = new ArrayList<>();
 		
-		NS3asy.INSTANCE.SetOnPacketReadFtn((receiverIp, receiverPort, senderIp, senderPort, payload, length) ->
-					receivedStrings.add(new String(payload.getByteArray(0, length))));
+		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) ->
+			receivedStrings.add(new String(payload.getByteArray(0, length)));
+		NS3asy.INSTANCE.SetOnPacketReadFtn(callback);
 
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
@@ -39,13 +46,17 @@ public class StreamsTests {
 		//something other than a string, yet simple
 		final long someEpoch = 1574505936837L;
 		final Date dateToSend = new Date(someEpoch);
-		final String payload = NS3StreamsUtils.serializeToString(dateToSend);
-		
-		for (int i = 0; i < nodesCount; i++) {
-			NS3asy.INSTANCE.SchedulePacketsSending(i, 1, payload, payload.length());
-		}
+		final String stringPayload = NS3StreamsUtils.serializeToString(dateToSend);
+		final int length = stringPayload.length();
+		final Pointer payload = new Pointer(Native.malloc(length));
+		payload.setString(0, stringPayload, "ASCII");
 
+		NS3asy.INSTANCE.SchedulePacketsSending(0, 1, payload, length);
+		//check that garbage collection doesn't claim native memory
+		System.gc();
 		NS3asy.INSTANCE.ResumeSimulation(-1);
+		
+		Native.free(Pointer.nativeValue(payload));
 		
 		final String receivedPayload = receivedStrings.stream().reduce((s1, s2) -> s1 + s2).orElse("");
 		final Object receivedObject = NS3StreamsUtils.deserializeFromString(receivedPayload);

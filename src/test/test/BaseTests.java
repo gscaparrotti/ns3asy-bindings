@@ -11,10 +11,12 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
 import bindings.NS3asy;
+import bindings.NS3asy.SetOnPacketReadFtn_ftn_callback;
 
 public class BaseTests {
 	
 	private static int nodesCount = 2;
+	private static SetOnPacketReadFtn_ftn_callback callback;
 	
 	@After
 	public void finish() {
@@ -25,18 +27,23 @@ public class BaseTests {
 	
 	@Test
 	public void oneToOneTest() {
-		int toSendCount = 100;
-		String toSendString = "test";
-		List<String> receivedStrings = new ArrayList<>(toSendCount);
-		NS3asy.INSTANCE.SetOnPacketReadFtn((receiverIp, receiverPort, senderIp, senderPort, payload, length) -> 
-			receivedStrings.add(new String(payload.getByteArray(0, length))));
+		final int toSendCount = 100;
+		final String toSendString = "test";
+		final List<String> receivedStrings = new ArrayList<>(toSendCount);
+		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) -> 
+			receivedStrings.add(new String(payload.getByteArray(0, length)));
+		NS3asy.INSTANCE.SetOnPacketReadFtn(callback);
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
 		NS3asy.INSTANCE.FinalizeSimulationSetup();
-		for (int i = 0; i < nodesCount; i++) {
-			NS3asy.INSTANCE.SchedulePacketsSending(i, toSendCount, toSendString, toSendString.length());
-		}
+		final int length = toSendString.length();
+		final Pointer toSendPointer = new Pointer(Native.malloc(length));
+		toSendPointer.setString(0, toSendString, "ASCII");
+		NS3asy.INSTANCE.SchedulePacketsSending(0, toSendCount, toSendPointer, length);
+		//check that garbage collection doesn't claim native memory
+		System.gc();
 		NS3asy.INSTANCE.ResumeSimulation(-1);
+		Native.free(Pointer.nativeValue(toSendPointer));
 		//each sent packet contains a @ character
 		assertEquals(toSendCount, countOccurences(receivedStrings, toSendString));
 	}
