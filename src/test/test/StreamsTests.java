@@ -32,12 +32,18 @@ public class StreamsTests {
 	@Test
 	public void oneToOneStreamTest() {
 		final int nodesCount = 2;
-		final List<String> receivedStrings = new ArrayList<>();
+		final List<Byte> receivedBytes = new ArrayList<>();
 		
-		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) ->
-			receivedStrings.add(new String(payload.getByteArray(0, length)));
+		//set callback for received packets
+		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) -> {
+			final byte[] receivedByteArray = payload.getByteArray(0, length);
+			for (byte b : receivedByteArray) {
+				receivedBytes.add(b);
+			}
+		};
 		NS3asy.INSTANCE.SetOnPacketReadFtn(callback);
-
+		
+		//configure ns3asy
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
 		NS3asy.INSTANCE.FinalizeSimulationSetup();
@@ -46,21 +52,34 @@ public class StreamsTests {
 		//something other than a string, yet simple
 		final long someEpoch = 1574505936837L;
 		final Date dateToSend = new Date(someEpoch);
-		final String stringPayload = NS3StreamsUtils.serializeToString(dateToSend);
-		final int length = stringPayload.length();
+		
+		//allocate native memory on the heap and fill it with serialized object
+		final byte[] byteArrayPayload = NS3StreamsUtils.serializeToByteArray(dateToSend);
+		final int length = byteArrayPayload.length;
 		final Pointer payload = new Pointer(Native.malloc(length));
-		payload.setString(0, stringPayload, "ASCII");
+		for (int i = 0; i < length; i++) {
+			payload.setByte(i, byteArrayPayload[i]);
+		}
 
+		//send serialized object
 		NS3asy.INSTANCE.SchedulePacketsSending(0, 1, payload, length);
-		//check that garbage collection doesn't claim native memory
+		//check that garbage collection doesn't claim native memory which is still needed
+		//since gc is non-deterministic, there is a specific test for this in JNATest
 		System.gc();
 		NS3asy.INSTANCE.ResumeSimulation(-1);
 		
+		//free the previously allocated native memory which is no longer necessary 
+		//(it's been used when calling ResumeSimulation(-1) )
 		Native.free(Pointer.nativeValue(payload));
 		
-		final String receivedPayload = receivedStrings.stream().reduce((s1, s2) -> s1 + s2).orElse("");
-		final Object receivedObject = NS3StreamsUtils.deserializeFromString(receivedPayload);
+		//deserialized received bytes into a a Java object
+		final byte[] receivedPayload = new byte[receivedBytes.size()];
+		for (int i = 0; i < receivedBytes.size(); i++) {
+			receivedPayload[i] = receivedBytes.get(i);
+		}
+		final Object receivedObject = NS3StreamsUtils.deserializeFromByteArray(receivedPayload);
 		
+		//check that the received object is the same as the sent one
 		if (!(receivedObject instanceof Date)) {
 			fail("Received object was a " + receivedObject.getClass().getName());
 		} else {

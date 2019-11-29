@@ -15,21 +15,21 @@ import java.util.Base64;
  */
 public class NS3StreamsUtils {
 	
-	public static String serializeToString(final Serializable object) {
+	public static byte[] serializeToByteArray(final Serializable object) {
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			final ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(object);
 			oos.close();
-			return Base64.getEncoder().encodeToString(baos.toByteArray());
+			return baos.toByteArray();
 		} catch (IOException e) {
 			//check for null values in the return value
 			return null;
 		}
 	}
 	
-	public static Object deserializeFromString(final String string) {
-		final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(string));
+	public static Object deserializeFromByteArray(final byte[] byteArray) {
+		final ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
 		try {
 			final ObjectInputStream ois = new ObjectInputStream(bais);
 			final Object readObject = ois.readObject();
@@ -39,6 +39,13 @@ public class NS3StreamsUtils {
 			return e;
 		}
 	}
+	
+	public static String serializeToString(final Serializable object) {
+		return Base64.getEncoder().encodeToString(serializeToByteArray(object));
+	}
+	
+	public static Object deserializeFromString(final String string) {
+		return deserializeFromByteArray(Base64.getDecoder().decode(string));
+	}
 		
-
 }
