@@ -44,7 +44,7 @@ public class BaseTests {
 		System.gc();
 		NS3asy.INSTANCE.ResumeSimulation(-1);
 		Native.free(Pointer.nativeValue(toSendPointer));
-		//each sent packet contains a @ character
+
 		assertEquals(toSendCount, countOccurences(receivedStrings, toSendString));
 	}
 	
