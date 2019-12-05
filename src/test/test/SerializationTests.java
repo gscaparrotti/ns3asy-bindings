@@ -18,7 +18,7 @@ import bindings.NS3asy.SetOnPacketReadFtn_ftn_callback;
 import utils.NS3StreamsUtils;
 
 
-public class StreamsTests {
+public class SerializationTests {
 	
 	private static SetOnPacketReadFtn_ftn_callback callback;
 	
@@ -30,7 +30,7 @@ public class StreamsTests {
 	}
 	
 	@Test
-	public void oneToOneStreamTest() {
+	public void oneToOneSerializationTest() {
 		final int nodesCount = 2;
 		final List<Byte> receivedBytes = new ArrayList<>();
 		
@@ -90,7 +90,7 @@ public class StreamsTests {
 	}
 	
 	@Test
-	public void serializationTest() {		
+	public void offlineSerializationTest() {		
 		final long someEpoch = 1574505936837L;
 		final Date dateToSend = new Date(someEpoch);
 		final String payload = NS3StreamsUtils.serializeToString(dateToSend);
