@@ -29,25 +29,21 @@ public class GatewayTest {
 	
 	@Test
 	public void manyToManyTest() {
-		final List<Pair<Integer, Integer>> links = new LinkedList<>();
-
+		final int nodesCount = 3;
 		final NS3Gateway gateway = new NS3Gateway();
-		NS3asy.INSTANCE.SetNodesCount(3);
-		links.add(new ImmutablePair<>(0, 1));
-		links.add(new ImmutablePair<>(0, 2));
-		links.add(new ImmutablePair<>(1, 0));
-		links.add(new ImmutablePair<>(2, 0));
-		for (final Pair<Integer, Integer> link : links) {
-			NS3asy.INSTANCE.AddLink(link.getLeft(), link.getRight());
-		}
+		NS3asy.INSTANCE.SetNodesCount(nodesCount);
+		NS3asy.INSTANCE.AddLink(0, 1);
+		NS3asy.INSTANCE.AddLink(0, 2);
+		NS3asy.INSTANCE.AddLink(1, 0);
+		NS3asy.INSTANCE.AddLink(2, 0);
 		NS3asy.INSTANCE.FinalizeSimulationSetup();
 		
 		final String toSendString = "test";
 		final Pointer toSendPointer = new Pointer(Native.malloc(toSendString.length()));
 		toSendPointer.setString(0, toSendString, "ASCII");
 		//a node sends the packet to all the nodes it has been connected to
-		for (final Pair<Integer, Integer> link : links) {
-			NS3asy.INSTANCE.SchedulePacketsSending(link.getLeft(), 1, toSendPointer, toSendString.length());
+		for (int i = 0; i < nodesCount; i++) {
+			NS3asy.INSTANCE.SchedulePacketsSending(i, 1, toSendPointer, toSendString.length());
 		}
 		NS3asy.INSTANCE.ResumeSimulation(-1);
 		Native.free(Pointer.nativeValue(toSendPointer));
