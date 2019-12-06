@@ -105,6 +105,14 @@ public class NS3Gateway {
 			this.port = port;
 		}
 		
+		public String getIp() {
+			return ip;
+		}
+
+		public int getPort() {
+			return port;
+		}
+
 		@Override
 		public int hashCode() {
 			return Objects.hash(ip, port);
