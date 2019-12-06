@@ -3,11 +3,10 @@ package test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Test;
@@ -25,27 +24,25 @@ public class StreamsTest {
 	}
 	
 	@Test
-	public void basicInputStreamTest() throws IOException {
+	public void basicStreamsTest() throws IOException, ClassNotFoundException {
 		final NS3Gateway gateway = new NS3Gateway();
 		NS3asy.INSTANCE.SetNodesCount(2);
 		NS3asy.INSTANCE.AddLink(0, 1);
 		NS3asy.INSTANCE.FinalizeSimulationSetup();
 		
-		final String toSendString = "test";
-		
-		final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new NS3OutputStream(0, true)));
-		writer.write(toSendString);
-		writer.flush();
-		writer.close();
+		final Object toSendObject = new Date();
+		final ObjectOutputStream oos = new ObjectOutputStream(new NS3OutputStream(0, true));
+		oos.writeObject(toSendObject);
+		oos.flush();
+		oos.close();
 		
 		for (final Endpoint receiver : gateway.getReceivers()) {
 			for (final Endpoint sender : gateway.getSenders(receiver)) {
 				//flawless integration with Java idioms
-				final BufferedReader reader = 
-						new BufferedReader(new InputStreamReader(new NS3asyInputStream(gateway, sender, receiver)));
-				final String receivedString = reader.readLine();
-				reader.close();
-				assertEquals(toSendString, receivedString);
+				final ObjectInputStream ois = new ObjectInputStream(new NS3asyInputStream(gateway, sender, receiver));
+				final Object receivedObject = ois.readObject();
+				ois.close();
+				assertEquals(toSendObject, receivedObject);
 				//check that closing the stream actually wiped the underlying data structure
 				assertArrayEquals(new byte[0], gateway.getBytesInInterval(receiver, sender, 0, -1));
 			}
