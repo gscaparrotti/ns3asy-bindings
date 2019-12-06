@@ -45,6 +45,7 @@ public class NS3OutputStream extends OutputStream {
 		for (final Pointer p : bytes) {
 			Native.free(Pointer.nativeValue(p));
 		}
+		bytes.clear();
 	}
 
 }
