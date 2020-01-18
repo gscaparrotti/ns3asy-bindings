@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,16 +24,21 @@ public class StreamsTest {
 	
 	@Test
 	public void basicStreamsTest() throws IOException, ClassNotFoundException {
+		final int nodesCount = 3;
 		final NS3Gateway gateway = new NS3Gateway();
-		NS3asy.INSTANCE.SetNodesCount(2);
+		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
+		NS3asy.INSTANCE.AddLink(0, 2);
+		NS3asy.INSTANCE.AddLink(1, 0);
 		NS3asy.INSTANCE.FinalizeSimulationSetup();
 		
 		final Object toSendObject = new Date();
-		final ObjectOutputStream oos = new ObjectOutputStream(new NS3OutputStream(0, true));
-		oos.writeObject(toSendObject);
-		oos.flush();
-		oos.close();
+		for (int i = 0; i < nodesCount; i++) {
+			final ObjectOutputStream oos = new ObjectOutputStream(new NS3OutputStream(gateway, i, false));
+			oos.writeObject(toSendObject);
+			oos.flush();
+			oos.close();
+		}
 		
 		for (final Endpoint receiver : gateway.getReceivers()) {
 			for (final Endpoint sender : gateway.getSenders(receiver)) {

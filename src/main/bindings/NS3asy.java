@@ -6,7 +6,8 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
 public interface NS3asy extends Library {
-	Library[] dependencies = {Native.load(("ns3.29-applications-debug"), Library.class)};
+	Library[] dependencies = {Native.load(("ns3.29-applications-debug"), Library.class), 
+							  Native.load(("ns3.29-wifi-debug"), Library.class)};
 	
     NS3asy INSTANCE = (NS3asy) Native.load(("ns3.29-ns3asy-debug"), NS3asy.class);
     
@@ -44,6 +45,11 @@ public interface NS3asy extends Library {
 	 */
 	int FinalizeSimulationSetup();
 	/**
+	 * Original signature : <code>int FinalizeWithWifiPhy()</code><br>
+	 * <i>native declaration : line 13</i>
+	 */
+	int FinalizeWithWifiPhy();
+	/**
 	 * Original signature : <code>void SchedulePacketsSending(unsigned int, unsigned int, const char*, int)</code><br>
 	 * <i>native declaration : line 13</i>
 	 */
@@ -58,6 +64,21 @@ public interface NS3asy extends Library {
 	 * <i>native declaration : line 17</i>
 	 */
 	void StopSimulation();
+	/**
+	 * Original signature : <code>int getNodesCount()</code><br>
+	 * <i>native declaration : line 21</i>
+	 */
+	int getNodesCount();
+	/**
+	 * Original signature : <code>int getReceiversN(unsigned int)</code><br>
+	 * <i>native declaration : line 23</i>
+	 */
+	int getReceiversN(int sender);
+	/**
+	 * Original signature : <code>int getReceiverAt(unsigned int, unsigned int)</code><br>
+	 * <i>native declaration : line 25</i>
+	 */
+	int getReceiverAt(int sender, int receiverIndex);
 	/**
 	 * Original signature : <code>char* getIpAddressFromIndex(unsigned int)</code><br>
 	 * <i>native declaration : line 28</i>
