@@ -1,6 +1,5 @@
 package test;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,7 +47,7 @@ public class StreamsTest {
 				ois.close();
 				assertEquals(toSendObject, receivedObject);
 				//check that closing the stream actually wiped the underlying data structure
-				assertArrayEquals(new byte[0], gateway.getBytesInInterval(receiver, sender, 0, -1));
+				assertEquals(0, gateway.getBytesInInterval(receiver, sender, 0, -1).size());
 			}
 		}
 	}

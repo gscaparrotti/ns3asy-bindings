@@ -45,10 +45,11 @@ public class GatewayTest {
 		
 		for (final Endpoint receiver : gateway.getReceivers()) {
 			for (final Endpoint sender : gateway.getSenders(receiver)) {
-				final byte[] receivedBytes = gateway.getBytesInInterval(receiver, sender, 0, -1);
+				final byte[] receivedBytes = 
+						NS3Gateway.convertToByteArray(gateway.getBytesInInterval(receiver, sender, 0, -1));
 				assertEquals(toSendString, new String(receivedBytes));
 				gateway.removeBytesInInterval(receiver, sender, 0, -1);
-				assertTrue(gateway.getBytesInInterval(receiver, sender, 0, -1).length == 0);
+				assertTrue(gateway.getBytesInInterval(receiver, sender, 0, -1).size() == 0);
 			}
 		}
 	}

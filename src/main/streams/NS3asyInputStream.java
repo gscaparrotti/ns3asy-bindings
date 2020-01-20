@@ -2,6 +2,9 @@ package streams;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import bindings.NS3asy;
 import communication.NS3Gateway;
@@ -10,10 +13,12 @@ import communication.NS3Gateway.Endpoint;
 public class NS3asyInputStream extends InputStream {
 	
 	private boolean closed = false;
-	private int position = 0;
 	private final NS3Gateway gateway;
 	private final Endpoint sender;
 	private final Endpoint receiver;
+	private int position = 0;
+	private double firstReceiveTime = -1;
+	private double lastReceiveTime = -1;
 	
 	public NS3asyInputStream(final NS3Gateway gateway, final Endpoint sender, final Endpoint receiver) {
 		if (NS3asy.INSTANCE.isUdp()) {
@@ -27,10 +32,14 @@ public class NS3asyInputStream extends InputStream {
 	@Override
 	public int read() throws IOException {
 		checkClosed();
-		final byte[] data = gateway.getBytesInInterval(receiver, sender, position, position + 1);
-		if (data.length > 0) {
+		final List<Pair<Byte, Double>> data = gateway.getBytesInInterval(receiver, sender, position, position + 1);
+		if (data.size() > 0) {
 			position++;
-			return data[0];
+			if (firstReceiveTime < 0) {
+				firstReceiveTime = data.get(0).getRight();
+			}
+			lastReceiveTime = data.get(0).getRight();
+			return data.get(0).getLeft();
 		}
 		return -1;
 	}
@@ -38,7 +47,7 @@ public class NS3asyInputStream extends InputStream {
 	@Override
 	public int available() throws IOException {
 		checkClosed();
-		return gateway.getBytesInInterval(receiver, sender, position, -1).length;
+		return gateway.getBytesInInterval(receiver, sender, position, -1).size();
 	}
 	
 	@Override
@@ -46,6 +55,13 @@ public class NS3asyInputStream extends InputStream {
 		gateway.removeBytesInInterval(receiver, sender, 0, position);
 		position = 0;
 		closed = true;
+	}
+	
+	public double getDurationAndReset() {
+		final double duration = lastReceiveTime - firstReceiveTime;
+		firstReceiveTime = -1;
+		lastReceiveTime = -1;
+		return duration;
 	}
 	
 	private void checkClosed() throws IOException {
