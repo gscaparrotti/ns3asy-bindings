@@ -34,7 +34,7 @@ public class StreamsTest {
 		
 		final Object toSendObject = new Date();
 		for (int i = 0; i < nodesCount; i++) {
-			final ObjectOutputStream oos = new ObjectOutputStream(new NS3OutputStream(gateway, i, false));
+			final ObjectOutputStream oos = new ObjectOutputStream(new NS3OutputStream(i, false));
 			oos.writeObject(toSendObject);
 			oos.flush();
 			oos.close();

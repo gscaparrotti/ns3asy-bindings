@@ -35,7 +35,7 @@ public class SerializationTests {
 		final List<Byte> receivedBytes = new ArrayList<>();
 		
 		//set callback for received packets
-		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) -> {
+		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length, time) -> {
 			final byte[] receivedByteArray = payload.getByteArray(0, length);
 			for (byte b : receivedByteArray) {
 				receivedBytes.add(b);

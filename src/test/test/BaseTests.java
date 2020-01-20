@@ -30,7 +30,7 @@ public class BaseTests {
 		final int toSendCount = 100;
 		final String toSendString = "test";
 		final List<String> receivedStrings = new ArrayList<>(toSendCount);
-		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) -> 
+		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length, time) -> 
 			receivedStrings.add(new String(payload.getByteArray(0, length)));
 		NS3asy.INSTANCE.SetOnPacketReadFtn(callback);
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);

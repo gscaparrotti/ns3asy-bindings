@@ -28,7 +28,7 @@ public class NS3Gateway {
 	private static NS3asy.SetOnPacketReadFtn_ftn_callback callback;
 	
 	public NS3Gateway() {
-		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length) -> {
+		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length, time) -> {
 			final Endpoint receiver = new Endpoint(receiverIp, receiverPort);
 			final Endpoint sender = new Endpoint(senderIp, senderPort);
 			final byte[] payloadAsBytes = payload.getByteArray(0, length);

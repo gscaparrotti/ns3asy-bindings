@@ -3,6 +3,7 @@ package streams;
 import java.io.IOException;
 import java.io.InputStream;
 
+import bindings.NS3asy;
 import communication.NS3Gateway;
 import communication.NS3Gateway.Endpoint;
 
@@ -15,6 +16,9 @@ public class NS3asyInputStream extends InputStream {
 	private final Endpoint receiver;
 	
 	public NS3asyInputStream(final NS3Gateway gateway, final Endpoint sender, final Endpoint receiver) {
+		if (NS3asy.INSTANCE.isUdp()) {
+			throw new IllegalStateException("Cannot create a stream over UDP");
+		}
 		this.gateway = gateway;
 		this.sender = sender;
 		this.receiver = receiver;

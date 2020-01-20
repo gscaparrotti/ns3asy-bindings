@@ -13,21 +13,21 @@ public interface NS3asy extends Library {
     
     /** <i>native declaration : line 19</i> */
 	public interface SetOnReceiveFtn_ftn_callback extends Callback {
-		void apply(String ip, int port);
+		void apply(String ip, int port, double time);
 	};
 	/** <i>native declaration : line 21</i> */
 	public interface SetOnPacketReadFtn_ftn_callback extends Callback {
 		void apply(String receiverIp, int receiverPort, String senderIp, int senderPort, 
-				Pointer payload, int payloadLength);
+				Pointer payload, int payloadLength, double time);
 	};
 	/** <i>native declaration : line 23</i> */
 	public interface SetOnAcceptFtn_ftn_callback extends Callback {
-		void apply(String receiverIp, int receiverPort, String senderIp, int senderPort);
+		void apply(String receiverIp, int receiverPort, String senderIp, int senderPort, double time);
 	};
 	/** <i>native declaration : line 25</i> */
 	public interface SetOnSendFtn_ftn_callback extends Callback {
 		void apply(String senderIp, int senderPort, String receiverIp, int receiverPort, 
-				Pointer payload, int payloadLength);
+				Pointer payload, int payloadLength, double time);
 	};
 	/**
 	 * Original signature : <code>void SetNodesCount(unsigned int)</code><br>
@@ -39,6 +39,16 @@ public interface NS3asy extends Library {
 	 * <i>native declaration : line 9</i>
 	 */
 	void AddLink(int sourceIndex, int destinationIndex);
+	/**
+	 * Original signature : <code>void setUdp(bool)</code><br>
+	 * <i>native declaration : line 11</i>
+	 */
+	void setUdp(byte isUdp);
+	/**
+	 * Original signature : <code>bool isUdp()</code><br>
+	 * <i>native declaration : line 13</i>
+	 */
+	boolean isUdp();
 	/**
 	 * Original signature : <code>int FinalizeSimulationSetup()</code><br>
 	 * <i>native declaration : line 11</i>
