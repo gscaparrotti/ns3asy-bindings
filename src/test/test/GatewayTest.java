@@ -31,7 +31,7 @@ public class GatewayTest {
 		NS3asy.INSTANCE.AddLink(0, 2);
 		NS3asy.INSTANCE.AddLink(1, 0);
 		NS3asy.INSTANCE.AddLink(2, 0);
-		NS3asy.INSTANCE.FinalizeSimulationSetup();
+		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0, "1Mbps");
 		
 		final String toSendString = "test";
 		final Pointer toSendPointer = new Pointer(Native.malloc(toSendString.length()));

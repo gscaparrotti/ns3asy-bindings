@@ -46,7 +46,7 @@ public class SerializationTests {
 		//configure ns3asy
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
-		NS3asy.INSTANCE.FinalizeSimulationSetup();
+		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0, "1Mbps");
 		
 		//we use a Date object to demonstrate the functionality of serialization with
 		//something other than a string, yet simple

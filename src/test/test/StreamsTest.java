@@ -29,7 +29,7 @@ public class StreamsTest {
 		NS3asy.INSTANCE.AddLink(0, 1);
 		NS3asy.INSTANCE.AddLink(0, 2);
 		NS3asy.INSTANCE.AddLink(1, 0);
-		NS3asy.INSTANCE.FinalizeSimulationSetup();
+		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0.002, "1Mbps");
 		
 		final Object toSendObject = new Date();
 		for (int i = 0; i < nodesCount; i++) {

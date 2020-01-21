@@ -7,7 +7,8 @@ import com.sun.jna.Pointer;
 
 public interface NS3asy extends Library {
 	Library[] dependencies = {Native.load(("ns3.29-applications-debug"), Library.class), 
-							  Native.load(("ns3.29-wifi-debug"), Library.class)};
+							  Native.load(("ns3.29-wifi-debug"), Library.class),
+							  Native.load(("ns3.29-csma-debug"), Library.class)};
 	
     NS3asy INSTANCE = (NS3asy) Native.load(("ns3.29-ns3asy-debug"), NS3asy.class);
     
@@ -40,11 +41,6 @@ public interface NS3asy extends Library {
 	 */
 	void AddLink(int sourceIndex, int destinationIndex);
 	/**
-	 * Original signature : <code>void setUdp(bool)</code><br>
-	 * <i>native declaration : line 11</i>
-	 */
-	void setUdp(byte isUdp);
-	/**
 	 * Original signature : <code>bool isUdp()</code><br>
 	 * <i>native declaration : line 13</i>
 	 */
@@ -53,7 +49,7 @@ public interface NS3asy extends Library {
 	 * Original signature : <code>int FinalizeSimulationSetup()</code><br>
 	 * <i>native declaration : line 11</i>
 	 */
-	int FinalizeSimulationSetup();
+	int FinalizeSimulationSetup(boolean isUdp, int packetLength, double errorRate, String dataRate);
 	/**
 	 * Original signature : <code>int FinalizeWithWifiPhy()</code><br>
 	 * <i>native declaration : line 13</i>

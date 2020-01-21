@@ -35,7 +35,7 @@ public class BaseTests {
 		NS3asy.INSTANCE.SetOnPacketReadFtn(callback);
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
-		NS3asy.INSTANCE.FinalizeSimulationSetup();
+		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0, "1Mbps");
 		final int length = toSendString.length();
 		final Pointer toSendPointer = new Pointer(Native.malloc(length));
 		toSendPointer.setString(0, toSendString, "ASCII");
@@ -52,7 +52,7 @@ public class BaseTests {
 	public void addressesTest() {
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
-		NS3asy.INSTANCE.FinalizeSimulationSetup();
+		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0, "1Mbps");
 		for (int i = 0; i < nodesCount; i++) {
 			assertEquals(i, NS3asy.INSTANCE.getIndexFromIpAddress("10.1.1." + (i + 1)));
 			Pointer ipPointer = NS3asy.INSTANCE.getIpAddressFromIndex(i);
