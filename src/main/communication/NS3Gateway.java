@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -80,10 +81,10 @@ public class NS3Gateway {
 		if (receivedData.containsKey(receiver)) {
 			final Map<Endpoint, List<Pair<Byte, Double>>> senders = receivedData.get(receiver);
 			if (sender.port == ANY_SENDER_PORT) {
-				final List<Pair<Byte, Double>> receivedBytes = new LinkedList<>();
-				senders.entrySet().stream()
-					.filter(e -> e.getKey().ip.equals(sender.ip))
-					.forEach(e -> receivedBytes.addAll(e.getValue()));
+				final List<Pair<Byte, Double>> receivedBytes = senders.entrySet().stream()
+						.filter(e -> e.getKey().ip.equals(sender.ip))
+						.flatMap(e -> e.getValue().stream())
+						.collect(Collectors.toList());
 				return receivedBytes;
 			} else {
 				if (senders.containsKey(sender)) {

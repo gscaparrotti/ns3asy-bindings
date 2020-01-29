@@ -28,6 +28,13 @@ dependencies {
 	testCompile 'junit:junit:4.12'
 }
 
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 task download(type: Exec) {
 	commandLine 'sh', './ns3asy.sh'
 }
