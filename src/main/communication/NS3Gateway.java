@@ -73,7 +73,24 @@ public class NS3Gateway {
 		final List<Pair<Byte, Double>> list =  getReceivedBytes(receiver, sender);
 		final int actualEnd = end >= 0 ? end : list.size();
 		if (start >= 0 && actualEnd >= 0 && start <= list.size() && actualEnd <= list.size()) {
-			list.subList(start, actualEnd).clear();
+			for (int i = 0; i < actualEnd - start; i++) {
+				list.remove(start);
+			}
+			//the sender could have ANY_SENDER_PORT as port, so we must check for this case
+			//and find its real port in case it's so
+			Endpoint actualSender = sender.port != ANY_SENDER_PORT ? sender : null;
+			if (actualSender == null) {
+				for (Endpoint e : this.receivedData.get(receiver).keySet()) {
+					if (e.ip.equals(sender.ip)) {
+						actualSender = e;
+					}
+				}
+			}
+			//there is no guarantee that "list" will be the actual list in the map,
+			//because it's obtained using a stream, so a put operation is needed instead.
+			if (actualSender != null) {
+				this.receivedData.get(receiver).put(actualSender, list);
+			}
 		}	
 	}
 	
