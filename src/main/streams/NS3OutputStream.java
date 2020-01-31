@@ -35,7 +35,7 @@ public class NS3OutputStream extends OutputStream {
 	public void write(int b) throws IOException {
 		if (!initialized) {
 			//let the nodes establish the tcp connection
-			SIM.ResumeSimulation(-1);
+			SIM.ResumeSimulation(60);
 			initialized = true;			
 		}
 		final Pointer toSendPointer = new Pointer(Native.malloc(1));
