@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.sun.jna.Pointer;
+
 import bindings.NS3asy;
+import bindings.NS3asy.SetOnSendFtn_ftn_callback;
 
 public class NS3Gateway {
 	
@@ -26,10 +29,12 @@ public class NS3Gateway {
 	 * each list is reachable given the receiver and the sender
 	 */	
 	private final Map<Endpoint, Map<Endpoint, List<Pair<Byte, Double>>>> receivedData = new HashMap<>();
-	private static NS3asy.SetOnPacketReadFtn_ftn_callback callback;
+	private Map<String, Double> firstSendTimeForOutputStream = new HashMap<>();
+	private static NS3asy.SetOnPacketReadFtn_ftn_callback packetReadCallback;
+	private static SetOnSendFtn_ftn_callback packetSendCallback;
 	
 	public NS3Gateway() {
-		callback = (receiverIp, receiverPort, senderIp, senderPort, payload, length, time) -> {
+		packetReadCallback = (receiverIp, receiverPort, senderIp, senderPort, payload, length, time) -> {
 			final Endpoint receiver = new Endpoint(receiverIp, receiverPort);
 			final Endpoint sender = new Endpoint(senderIp, senderPort);
 			final byte[] payloadAsBytes = payload.getByteArray(0, length);
@@ -45,7 +50,12 @@ public class NS3Gateway {
 				receivedBytesFromSender.add(Pair.of(b, time));
 			}
 		};
- 		NS3asy.INSTANCE.SetOnPacketReadFtn(callback);
+		packetSendCallback = (String senderIp, int senderPort, String receiverIp, int receiverPort, 
+				Pointer payload, int payloadLength, double time) -> {
+					firstSendTimeForOutputStream.putIfAbsent(receiverIp, time);
+				};
+ 		NS3asy.INSTANCE.SetOnPacketReadFtn(packetReadCallback);
+ 		NS3asy.INSTANCE.SetOnSendFtn(packetSendCallback);
 	}
 	
 	public Set<Endpoint> getReceivers() {
@@ -92,6 +102,14 @@ public class NS3Gateway {
 				this.receivedData.get(receiver).put(actualSender, list);
 			}
 		}	
+	}
+	
+	public Map<String, Double> getFirstSendTimes() {
+		return firstSendTimeForOutputStream;
+	}
+	
+	public void resetFirstSendTimes() {
+		firstSendTimeForOutputStream = new HashMap<>();
 	}
 	
 	private List<Pair<Byte, Double>> getReceivedBytes(final Endpoint receiver, final Endpoint sender) {

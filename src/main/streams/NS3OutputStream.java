@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
 import bindings.NS3asy;
+import communication.NS3Gateway;
 import communication.NS3Gateway.Endpoint;
 
 public class NS3OutputStream extends OutputStream {
@@ -17,18 +19,20 @@ public class NS3OutputStream extends OutputStream {
 	private final int senderIndex;
 	private final boolean applyBackpressure;
 	private final List<Pointer> bytes = new LinkedList<>();
+	private final NS3Gateway gateway;
 	private boolean initialized = false;
 	
-	public NS3OutputStream(final int senderIndex, final boolean applyBackpressure) throws IllegalArgumentException {
+	public NS3OutputStream(final NS3Gateway gateway, final int senderIndex, final boolean applyBackpressure) throws IllegalArgumentException {
 		if (SIM.isUdp()) {
 			throw new IllegalStateException("Cannot create a stream over UDP");
 		}
 		this.senderIndex = senderIndex;
 		this.applyBackpressure = applyBackpressure;
+		this.gateway = gateway;
 	}
 	
-	public NS3OutputStream(final Endpoint sender, final boolean applyBackpressure) throws IllegalArgumentException {
-		this(SIM.getIndexFromIpAddress(sender.getIp()), applyBackpressure);
+	public NS3OutputStream(final NS3Gateway gateway, final Endpoint sender, final boolean applyBackpressure) throws IllegalArgumentException {
+		this(gateway, SIM.getIndexFromIpAddress(sender.getIp()), applyBackpressure);
 	}
 
 	@Override
@@ -36,10 +40,10 @@ public class NS3OutputStream extends OutputStream {
 		if (!initialized) {
 			//let the nodes establish the tcp connection
 			SIM.ResumeSimulation(60);
-			initialized = true;			
+			initialized = true;
 		}
 		final Pointer toSendPointer = new Pointer(Native.malloc(1));
-		toSendPointer.setInt(0, b);
+		toSendPointer.setByte(0, (byte) b);
 		SIM.SchedulePacketsSending(senderIndex, 1, toSendPointer, 1);
 		bytes.add(toSendPointer);
 		if (applyBackpressure) {
@@ -54,6 +58,12 @@ public class NS3OutputStream extends OutputStream {
 			Native.free(Pointer.nativeValue(p));
 		}
 		bytes.clear();
+	}
+	
+	public Map<String, Double> getFirstSendTimesAndReset() {
+		final Map<String, Double> map = gateway.getFirstSendTimes();
+		gateway.resetFirstSendTimes();
+		return map;
 	}
 
 }

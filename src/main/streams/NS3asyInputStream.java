@@ -17,7 +17,6 @@ public class NS3asyInputStream extends InputStream {
 	private final Endpoint sender;
 	private final Endpoint receiver;
 	private int position = 0;
-	private double firstReceiveTime = -1;
 	private double lastReceiveTime = -1;
 	
 	public NS3asyInputStream(final NS3Gateway gateway, final Endpoint sender, final Endpoint receiver) {
@@ -35,9 +34,6 @@ public class NS3asyInputStream extends InputStream {
 		final List<Pair<Byte, Double>> data = gateway.getBytesInInterval(receiver, sender, position, position + 1);
 		if (data.size() > 0) {
 			position++;
-			if (firstReceiveTime < 0) {
-				firstReceiveTime = data.get(0).getRight();
-			}
 			lastReceiveTime = data.get(0).getRight();
 			return data.get(0).getLeft();
 		}
@@ -57,11 +53,8 @@ public class NS3asyInputStream extends InputStream {
 		closed = true;
 	}
 	
-	public double getDurationAndReset() {
-		final double duration = lastReceiveTime - firstReceiveTime;
-		firstReceiveTime = -1;
-		lastReceiveTime = -1;
-		return duration;
+	public double getLastReceiveTime() {
+		return lastReceiveTime;
 	}
 	
 	private void checkClosed() throws IOException {
