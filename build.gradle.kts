@@ -1,8 +1,11 @@
 plugins {
-    `java-library`
+    `java`
+    `maven-publish`
+    `signing`
+    id ("org.danilopianini.publish-on-central") version "0.2.0"
 }
 
-group = "ns3asy-bindings"
+group = "com.github.gscaparrotti"
 version = "0.1"
 
 sourceSets {
@@ -36,4 +39,27 @@ tasks.test {
 
 tasks.withType(Test::class) {
     environment("LD_LIBRARY_PATH", "tmp/ns3/ns-allinone-3.29/ns-3.29/build/lib")
+}
+
+publishOnCentral {
+    projectDescription.set("Java bindings for ns3 and ns3asy")
+    projectLongName.set("ns3asy-bindings")
+    projectUrl.set("https://github.com/gscaparrotti/ns3asy-bindings")
+    scmConnection.set("git@github.com:gscaparrotti/ns3asy-bindings.git")
+}
+
+publishing {
+    publications {
+        withType<MavenPublication> {
+            pom {
+                developers {
+                    developer {
+                        name.set("Giacomo Scaparrotti")
+                        email.set("giacomo.scaparrotti@studio.unibo.it")
+                        url.set("https://github.com/gscaparrotti")
+                    }
+                }
+            }
+        }
+    }
 }
