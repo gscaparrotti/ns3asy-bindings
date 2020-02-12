@@ -1,12 +1,12 @@
 plugins {
-    `java`
+    `java-library`
     `maven-publish`
     `signing`
     id ("org.danilopianini.publish-on-central") version "0.2.0"
 }
 
 group = "com.github.gscaparrotti"
-version = "0.1"
+version = "0.1.1"
 
 sourceSets {
     main {
@@ -24,8 +24,8 @@ repositories {
 }
 
 dependencies {
-	implementation("net.java.dev.jna:jna:5.5.0")
-	implementation("org.apache.commons:commons-lang3:3.9")
+	api("net.java.dev.jna:jna:5.5.0")
+	api("org.apache.commons:commons-lang3:3.9")
 	testImplementation("junit:junit:4.12")
 }
 
