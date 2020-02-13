@@ -1,4 +1,4 @@
-package streams;
+package com.github.gscaparrotti.ns3asybindings.streams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import bindings.NS3asy;
-import communication.NS3Gateway;
-import communication.NS3Gateway.Endpoint;
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway.Endpoint;
 
 public class NS3asyInputStream extends InputStream {
 	

@@ -1,4 +1,4 @@
-package test;
+package com.github.gscaparrotti.ns3asybindings.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -11,11 +11,12 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Test;
-import bindings.NS3asy;
-import communication.NS3Gateway;
-import communication.NS3Gateway.Endpoint;
-import streams.NS3OutputStream;
-import streams.NS3asyInputStream;
+
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway.Endpoint;
+import com.github.gscaparrotti.ns3asybindings.streams.NS3OutputStream;
+import com.github.gscaparrotti.ns3asybindings.streams.NS3asyInputStream;
 
 public class StreamsTest {
 

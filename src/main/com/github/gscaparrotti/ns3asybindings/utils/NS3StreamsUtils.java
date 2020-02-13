@@ -1,4 +1,4 @@
-package utils;
+package com.github.gscaparrotti.ns3asybindings.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

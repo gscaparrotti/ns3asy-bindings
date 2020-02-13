@@ -1,4 +1,4 @@
-package bindings;
+package com.github.gscaparrotti.ns3asybindings.bindings;
 
 import com.sun.jna.Callback;
 import com.sun.jna.Library;

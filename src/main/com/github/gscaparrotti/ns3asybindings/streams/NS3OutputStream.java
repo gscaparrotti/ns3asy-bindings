@@ -1,4 +1,4 @@
-package streams;
+package com.github.gscaparrotti.ns3asybindings.streams;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,12 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway.Endpoint;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-
-import bindings.NS3asy;
-import communication.NS3Gateway;
-import communication.NS3Gateway.Endpoint;
 
 public class NS3OutputStream extends OutputStream {
 	

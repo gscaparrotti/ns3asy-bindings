@@ -1,4 +1,4 @@
-package communication;
+package com.github.gscaparrotti.ns3asybindings.communication;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,10 +12,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy;
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy.SetOnSendFtn_ftn_callback;
 import com.sun.jna.Pointer;
-
-import bindings.NS3asy;
-import bindings.NS3asy.SetOnSendFtn_ftn_callback;
 
 public class NS3Gateway {
 	

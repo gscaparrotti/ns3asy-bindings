@@ -1,4 +1,4 @@
-package test;
+package com.github.gscaparrotti.ns3asybindings.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -6,12 +6,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Test;
 
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway;
+import com.github.gscaparrotti.ns3asybindings.communication.NS3Gateway.Endpoint;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-
-import bindings.NS3asy;
-import communication.NS3Gateway;
-import communication.NS3Gateway.Endpoint;
 
 public class GatewayTest {
 	

@@ -1,4 +1,4 @@
-package test;
+package com.github.gscaparrotti.ns3asybindings.test;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
@@ -7,11 +7,10 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Test;
 
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy;
+import com.github.gscaparrotti.ns3asybindings.bindings.NS3asy.SetOnPacketReadFtn_ftn_callback;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-
-import bindings.NS3asy;
-import bindings.NS3asy.SetOnPacketReadFtn_ftn_callback;
 
 public class BaseTests {
 	

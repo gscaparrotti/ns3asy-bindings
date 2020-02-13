@@ -1,4 +1,4 @@
-package jnaTest;
+package com.github.gscaparrotti.ns3asybindings.jnatest;
 
 import static org.junit.Assert.assertEquals;
 
