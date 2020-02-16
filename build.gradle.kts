@@ -3,10 +3,14 @@ plugins {
     `maven-publish`
     `signing`
     id ("org.danilopianini.publish-on-central") version "0.2.0"
+    id ("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
 }
 
 group = "com.github.gscaparrotti"
-version = "0.1.1"
+
+gitSemVer {
+    version = computeGitSemVer()
+}
 
 sourceSets {
     main {
@@ -62,4 +66,11 @@ publishing {
             }
         }
     }
+}
+
+tasks.register<Jar>("fatJar") {
+    dependsOn(subprojects.map { it.tasks.withType<Jar>() })
+    baseName = "${project.name}-fatjar"
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    with(tasks.jar.get() as CopySpec)
 }
