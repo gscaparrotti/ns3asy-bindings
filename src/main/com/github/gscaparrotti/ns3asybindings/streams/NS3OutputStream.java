@@ -17,7 +17,7 @@ public class NS3OutputStream extends OutputStream {
 	private final static NS3asy SIM = NS3asy.INSTANCE;
 	private final int senderIndex;
 	private final boolean applyBackpressure;
-	private final List<Pointer> bytes = new LinkedList<>();
+	private final List<Byte> bytes = new LinkedList<>();
 	private final NS3Gateway gateway;
 	private boolean initialized = false;
 	
@@ -41,10 +41,7 @@ public class NS3OutputStream extends OutputStream {
 			SIM.ResumeSimulation(60);
 			initialized = true;
 		}
-		final Pointer toSendPointer = new Pointer(Native.malloc(1));
-		toSendPointer.setByte(0, (byte) b);
-		SIM.SchedulePacketsSending(senderIndex, 1, toSendPointer, 1);
-		bytes.add(toSendPointer);
+		bytes.add((byte) b);
 		if (applyBackpressure) {
 			this.flush();
 		}
@@ -52,10 +49,13 @@ public class NS3OutputStream extends OutputStream {
 	
 	@Override
 	public void flush() throws IOException {
-		SIM.ResumeSimulation(-1);
-		for (final Pointer p : bytes) {
-			Native.free(Pointer.nativeValue(p));
+		final Pointer toSendPointer = new Pointer(Native.malloc(bytes.size()));
+		for (int i = 0; i < bytes.size(); i++) {
+			toSendPointer.setByte(i, bytes.get(i));
 		}
+		SIM.SchedulePacketsSending(senderIndex, 1, toSendPointer, bytes.size());
+		SIM.ResumeSimulation(-1);
+		Native.free(Pointer.nativeValue(toSendPointer));
 		bytes.clear();
 	}
 	
