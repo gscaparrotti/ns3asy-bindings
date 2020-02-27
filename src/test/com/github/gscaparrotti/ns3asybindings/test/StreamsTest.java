@@ -26,13 +26,28 @@ public class StreamsTest {
 	}
 	
 	@Test
-	public void basicStreamsTest() throws IOException, ClassNotFoundException {
+	public void testWithCsma() throws ClassNotFoundException, IOException {
+		init();
+		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0.002, "1Mbps");
+		doTest();
+	}
+	
+	@Test
+	public void testWithWifi() throws ClassNotFoundException, IOException {
+		init();
+		NS3asy.INSTANCE.FinalizeWithWifiPhy(false, 0, "ns3::ConstantSpeedPropagationDelayModel", 
+				"ns3::FriisPropagationLossModel", new double[] {0, 1, 2}, new double[] {0, 1, 2});
+		doTest();
+	}
+	
+	private void init() {
 		final int nodesCount = 2;
-		final NS3Gateway gateway = new NS3Gateway();
 		NS3asy.INSTANCE.SetNodesCount(nodesCount);
 		NS3asy.INSTANCE.AddLink(0, 1);
-
-		NS3asy.INSTANCE.FinalizeSimulationSetup(false, 0, 0.002, "1Mbps");
+	}
+	
+	private void doTest() throws IOException, ClassNotFoundException {
+		final NS3Gateway gateway = new NS3Gateway();
 		
 		final Object toSendObject = new Date();
 

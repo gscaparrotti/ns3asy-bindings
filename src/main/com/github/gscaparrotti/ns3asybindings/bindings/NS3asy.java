@@ -54,7 +54,11 @@ public interface NS3asy extends Library {
 	 * Original signature : <code>int FinalizeWithWifiPhy()</code><br>
 	 * <i>native declaration : line 13</i>
 	 */
-	int FinalizeWithWifiPhy();
+	/**
+	 * Original signature : <code>int FinalizeWithWifiPhy(bool, int, const char*, const char*, double[], double[])</code><br>
+	 * <i>native declaration : line 15</i>
+	 */
+	int FinalizeWithWifiPhy(boolean isUdp, int packetLength, String propagationDelay, String propagationLoss, double[] xPos, double[] yPos);
 	/**
 	 * Original signature : <code>void SchedulePacketsSending(unsigned int, unsigned int, const char*, int)</code><br>
 	 * <i>native declaration : line 13</i>
